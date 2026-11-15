@@ -18,9 +18,15 @@ TUN_VERSION=$(go mod edit -json | jq -er '.Require[] | select(.Path == "github.c
 TUN_DIR=$(go mod download -json "github.com/sagernet/sing-tun@${TUN_VERSION}" | jq -er '.Dir')
 cp -R "$TUN_DIR" ../sing-tun
 chmod -R u+w ../sing-tun
-patch --batch --fuzz=0 -p1 < "$ROOT/patches/sing-box-freebsd.patch"
-cd ../sing-tun
-patch --batch --fuzz=0 -p1 < "$ROOT/patches/sing-tun-freebsd.patch"
+python3 "$ROOT/scripts/migrate-patch.py" --source "$ROOT/.build/sing-box" --patch "$ROOT/patches/sing-box-freebsd.patch" --baseline "$ROOT/patches/bases/core" --component core --version "$SING_BOX_VERSION" --output "$ROOT/.build/patch-update"
+python3 "$ROOT/scripts/migrate-patch.py" --source "$ROOT/.build/sing-tun" --patch "$ROOT/patches/sing-tun-freebsd.patch" --baseline "$ROOT/patches/bases/sing-tun" --component sing-tun --version "$TUN_VERSION" --output "$ROOT/.build/patch-update"
 cd ../sing-box
 go mod edit -replace github.com/sagernet/sing-tun=../sing-tun
 printf '%s\n' "$TUN_VERSION" > ../sing-tun-version
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+  if [[ -f "$ROOT/.build/patch-update/migrated" ]]; then
+    echo 'migrated=true' >> "$GITHUB_OUTPUT"
+  else
+    echo 'migrated=false' >> "$GITHUB_OUTPUT"
+  fi
+fi

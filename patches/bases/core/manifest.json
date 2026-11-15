@@ -1,0 +1,9 @@
+{
+  "version": "1.14.4",
+  "patch": "sing-box-freebsd.patch",
+  "patch_sha256": "b9ffe0a24b188ad99ff55fe38a001526a19e1539858fb0e78cd56b0132e12bad",
+  "files": {
+    "option/tun.go": "61ea3f94e1ab1e4e55beb30cbe1816e3354f19abf477557cddde399e4683edb5",
+    "protocol/tun/inbound.go": "15ee95469a7fba284b392212d1098232eb79b964b79aa79fbda2a31bb0b710d7"
+  }
+}

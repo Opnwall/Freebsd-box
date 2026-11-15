@@ -39,3 +39,9 @@ scripts/build.sh
 
 本版本仅包含 FreeBSD TUN 补丁，没有增加原仓库的进程匹配、redirect 或订阅扩展。补丁改编自 [Vincent-Loeng/bsd-box 的 hidden 分支](https://github.com/Vincent-Loeng/bsd-box/tree/hidden)，保留 FreeBSD TUN 代码的 WireGuard/MIT 版权说明，适配当前依赖和 gVisor 报文头。
 
+
+## 补丁自动迁移
+
+补丁无法直接应用时，使用 `patches/bases/` 中记录的原始源码做三方合并，保留不冲突的上游修改；不使用 API，也不猜测接口或逻辑变化。迁移候选必须重新编译，并通过 FreeBSD 中 system、gvisor、mixed 三种 TUN 栈的启动和清理测试，才会保存到主分支并发布。发生冲突、编译失败或测试失败时停止发布，下次定时检查重试。当前测试不包含实际网络转发和自动路由验证。
+
+每次迁移仅尝试一次，不降低测试要求。修改补丁时需同步更新对应基线和校验值；基线不匹配会停止迁移。测试通过前候选补丁仅保存在本次 Actions artifact 中。

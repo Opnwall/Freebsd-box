@@ -1,0 +1,16 @@
+{
+  "version": "v0.9.7-0.20261023115432-040db71fcd33",
+  "patch": "sing-tun-freebsd.patch",
+  "patch_sha256": "528acf3b787c0a86c7f05a1b7d4b3854fab211f498730fe02c40685ca28bc71e",
+  "files": {
+    "monitor_freebsd.go": null,
+    "monitor_other.go": "072dc462e924991d0adfc32b476982353791af17f89fdf451d2ae58299ca076b",
+    "monitor_shared.go": "c1e8f12cfb246c2ef0100e4ccd5acef932e876f530134866d4c8c1d9d5d8f458",
+    "tun.go": "a7b02b059fea576b53c3e2f6dcc1cde75a3fe5feb7bc051df0be77824529c448",
+    "tun_freebsd.go": null,
+    "tun_freebsd_gvisor.go": null,
+    "tun_nondarwin.go": "ebb610db1e5c27e2a130b4076ed10264b4d94df7b29a4ce1be7297f77cf0b760",
+    "tun_other.go": "fe35108b0b1f86d2a4a01ab3a29b1b0b9a3a4dca26d344c2589b430407356820",
+    "tun_rules.go": "4a6bb9baab420a57293669a2a51d779fcd3b0a7fb02e14388bebfbe1b9ba25d9"
+  }
+}
