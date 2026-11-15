@@ -12,6 +12,5 @@
       "stack": "gvisor"
     }
   ],
-  "outbounds": [{"type": "direct", "tag": "direct"}],
-  "route": {"auto_detect_interface": true}
+  "outbounds": [{"type": "direct", "tag": "direct"}]
 }

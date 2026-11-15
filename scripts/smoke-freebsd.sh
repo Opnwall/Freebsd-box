@@ -20,8 +20,7 @@ for stack in system gvisor mixed; do
 {
   "log": {"level": "debug"},
   "inbounds": [{"type": "tun", "interface_name": "tun9", "address": ["172.19.0.1/30"], "mtu": 1500, "auto_route": false, "dns_mode": "disabled", "stack": "$stack"}],
-  "outbounds": [{"type": "direct", "tag": "direct"}],
-  "route": {"auto_detect_interface": true}
+  "outbounds": [{"type": "direct", "tag": "direct"}]
 }
 EOF
   "$binary" check -c dist/smoke.json

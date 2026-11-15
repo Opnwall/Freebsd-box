@@ -34,7 +34,7 @@ scripts/build.sh
 
 ## TUN 配置
 
-见 [template.json](template.json)。在 FreeBSD 上以 root 运行，并确保 `if_tun` 可用。默认模板使用 `auto_route: false`，先验证 TUN，再按防火墙实际情况配置路由和 DNS。pfSense / OPNsense 的放行规则及 DNS 需自行配置。
+见 [template.json](template.json)。在 FreeBSD 上以 root 运行，并确保 `if_tun` 可用。默认模板使用 `auto_route: false`，先验证 TUN，再按防火墙实际情况配置路由和 DNS。pfSense / OPNsense 的放行规则及 DNS 需自行配置。上游不支持 FreeBSD 的 `route.auto_detect_interface` 和 `bind_interface`，不要在配置中启用这些字段。
 
 `auto_route: true` 沿用原补丁的独立 FIB 方案，`fib_index` 默认 2022，需要足够的 `net.fibs` 和 `net.add_addr_allfibs=1`；按程序提示配置 `/boot/loader.conf` 后重启。虚拟机启动检查覆盖 `auto_route: false`，不代表已验证真实网关上的自动路由或转发吞吐。
 
