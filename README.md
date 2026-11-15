@@ -1,92 +1,44 @@
-**This repo may not be maintained anymore. The tool is enough to speed up some websites, e.g., OpenAI**
+# sing-box for FreeBSD x86-64 (TUN)
 
-精力有限，可能不再维护，目前足以加速某些网站，比如 OpenAI
+仅构建 **FreeBSD / amd64（x86-64，GOAMD64=v1）** 的 sing-box，支持 TUN 的 `system`、`gvisor`、`mixed` 栈。不再构建 OpenBSD、Windows、ARM、386、RISC-V 或 reF1nd 分支。
 
-**Currently, only release versions are supported**
+## 构建与下载
 
-目前，仅更新 release 版
+主分支 `master` 更新后自动编译，并在 FreeBSD 14.3 amd64 虚拟机检查三种 TUN 栈的启动和退出。检查成功后发布到本仓库 [Releases](https://github.com/Opnwall/Freebsd-box/releases)。也可从 Actions 手动运行。分支及 PR 构建仅上传 Actions artifact。
 
----
+产物：
 
-# bsd-box (with tun support)
+- `bsd-box-freebsd-amd64.xz`：兼容原文件名，解压后即 sing-box。
+- `SHA256SUMS`：压缩文件的 SHA-256 校验值。
+- `build-info.txt`：源码、依赖、Go 版本和编译参数。
 
-![build workflow](https://github.com/Vincent-Loeng/bsd-box/actions/workflows/run.yml/badge.svg) ![build reF1nd workflow](https://github.com/Vincent-Loeng/bsd-box/actions/workflows/run-reF1nd.yml/badge.svg)
+当前固定 sing-box **1.14.4** 和 Go **1.27.4**，避免每日追踪上游时补丁失配。更新版本时修改 `build.env`、`.go-version`，并重新验证补丁。只固定目标平台，不裁剪常用代理协议；编译标签见 `build.env`。
 
-This ***self-use repo*** automatically builds the latest version with patches
+```sh
+xz -dk bsd-box-freebsd-amd64.xz
+chmod +x bsd-box-freebsd-amd64
+./bsd-box-freebsd-amd64 version
+./bsd-box-freebsd-amd64 check -c config.json
+```
 
-此***自用仓库***自动应用补丁并构建最新的版本
+## 本地交叉编译
 
+需要 Bash、Go（版本见 `.go-version`）、curl、jq、patch、tar、xz。Linux 或 macOS 均可交叉编译：
 
-## Other tools 其他工具
+```sh
+scripts/prepare.sh
+scripts/build.sh
+```
 
-1. [**clash-meta for FreeBSD**](https://github.com/Vincent-Loeng/clash-meta)
-2. [**NaiveProxy for FreeBSD/OpenBSD**](https://github.com/Vincent-Loeng/naiveproxy)
+重新准备源码前删除生成目录 `.build/`。`prepare.sh` 从 sing-box 的 `go.mod` 获取准确的 sing-tun 依赖，通过 Go 模块下载处理伪版本，然后应用主分支内的补丁；不依赖 `hidden` 分支或浮动的 sing-tun `stable` 分支。
 
+## TUN 配置
 
-## Enhancements 增强功能
+见 [template.json](template.json)。在 FreeBSD 上以 root 运行，并确保 `if_tun` 可用。默认模板使用 `auto_route: false`，先验证 TUN，再按防火墙实际情况配置路由和 DNS。pfSense / OPNsense 的放行规则及 DNS 需自行配置。
 
-1. Tun interface is supported on FreeBSD/OpenBSD
+`auto_route: true` 沿用原补丁的独立 FIB 方案，`fib_index` 默认 2022，需要足够的 `net.fibs` 和 `net.add_addr_allfibs=1`；按程序提示配置 `/boot/loader.conf` 后重启。虚拟机启动检查覆盖 `auto_route: false`，不代表已验证真实网关上的自动路由或转发吞吐。
 
-   在 FreeBSD/OpenBSD 平台上支持 Tun 网卡
-
-2. Matching process is supported on FreeBSD
-
-   在 FreeBSD 平台上支持进程匹配
-
-3. Redirect is supported on FreeBSD/OpenBSD
-
-   在 FreeBSD/OpenBSD 平台上支持 redirect
-
-4. Subscription is supported in `reF1nd` core, please refer to [the document](https://github.com/reF1nd/sing-box/blob/reF1nd-stable/docs/configuration/provider/index.md)
-
-   `reF1nd`核心支持订阅，请参考[文档](https://github.com/reF1nd/sing-box/blob/reF1nd-stable/docs/configuration/provider/index.zh.md)，第三方核心的订阅功能较为相似，使用上区别小，选此核心仅为尽量满足订阅外的其他需求
-
-
-
-## Examples 示例
-
-Please refer to the given [template](template.json) (1.12)
-
-请参考提供的[模板](template.json)（1.12）
-
-
-## Known issues 已知问题
-
-1. Loops may happen on OpenBSD, the workround is shown in the template
-
-   OpenBSD上可能出现环路，绕过方法在模板里
-
-
-
-## TO-DO 待做事项
-
-1. Utilize `sendmmsg/recvmmsg` to improve tun performance
-
-   使用 `sendmmsg/recvmmsg` 提升 tun 性能
-
-2. Automatic redirect
-
-
-## Notes 注意事项
-
-
-1. Please configure DNS servers manually when using automatic routing on OPNsense
-
-   在 OPNsense 上使用自动路由时，请手动配置 DNS 服务器
-
-2. Please allow packets to pass when using `system` stack on pfSense/OPNsense
-
-   在 pfSense/OPNsense 上使用`system`栈时，请允许数据包通过
-
-3. Please add port forwarding rules when using `redirect` (higher performance)
-
-   使用 `redirect`（性能更好）时，请添加端口转发规则
-
-4. The support for `riscv64` and `ppc64` is experimental
-
-   对`riscv64`和`ppc64`支持仍处于实验阶段
-
----
+本版本仅包含 FreeBSD TUN 补丁，没有增加原仓库的进程匹配、redirect 或订阅扩展。补丁改编自 [Vincent-Loeng/bsd-box 的 hidden 分支](https://github.com/Vincent-Loeng/bsd-box/tree/hidden)，保留 FreeBSD TUN 代码的 WireGuard/MIT 版权说明，适配当前依赖和 gVisor 报文头。
 
 ## Original License
 

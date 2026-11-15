@@ -1,0 +1,29 @@
+--- a/option/tun.go
++++ b/option/tun.go
+@@ -12,6 +12,7 @@
+ )
+ 
+ type TunInboundOptions struct {
++	FIBIndex                      int                              `json:"fib_index,omitempty"`
+ 	InterfaceName                 string                           `json:"interface_name,omitempty"`
+ 	NetNs                         string                           `json:"netns,omitempty" reference:"network_namespace"`
+ 	MTU                           uint32                           `json:"mtu,omitempty"`
+--- a/protocol/tun/inbound.go
++++ b/protocol/tun/inbound.go
+@@ -16,7 +16,7 @@
+ 	C "github.com/sagernet/sing-box/constant"
+ 	"github.com/sagernet/sing-box/log"
+ 	"github.com/sagernet/sing-box/option"
+-	"github.com/sagernet/sing-tun"
++	tun "github.com/sagernet/sing-tun"
+ 	"github.com/sagernet/sing-tun/gtcpip/header"
+ 	"github.com/sagernet/sing/common"
+ 	E "github.com/sagernet/sing/common/exceptions"
+@@ -205,6 +205,7 @@
+ 			DNSMode:                               options.DNSMode,
+ 			DNSAddress:                            options.DNSAddress,
+ 			AutoRoute:                             options.AutoRoute,
++			FIBIndex:                              options.FIBIndex,
+ 			IPRoute2TableIndex:                    tableIndex,
+ 			IPRoute2RuleIndex:                     ruleIndex,
+ 			IPRoute2AutoRedirectFallbackRuleIndex: autoRedirectFallbackRuleIndex,
