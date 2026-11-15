@@ -3,7 +3,7 @@
 构建 **FreeBSD / amd64（x86-64，GOAMD64=v1）** 的 sing-box，支持 TUN 的 `system`、`gvisor`、`mixed` 栈。
 ## 构建与下载
 
-主分支 `master` 更新后自动编译，并在 FreeBSD 14.3 amd64 虚拟机检查三种 TUN 栈的启动和退出。检查成功后发布到本仓库 [Releases](https://github.com/Opnwall/Freebsd-box/releases)。也可从 Actions 手动运行。分支及 PR 构建仅上传 Actions artifact。
+每小时检查上游正式 Release；发现新版本后自动构建、测试并发布，已发布版本跳过。主分支 `master` 更新后也会自动编译，并在 FreeBSD 14.3 amd64 虚拟机检查三种 TUN 栈的启动和退出。检查成功后发布到本仓库 [Releases](https://github.com/Opnwall/Freebsd-box/releases)。也可从 Actions 手动运行。分支及 PR 构建仅上传 Actions artifact。
 
 产物：
 
@@ -11,7 +11,7 @@
 - `SHA256SUMS`：压缩文件的 SHA-256 校验值。
 - `build-info.txt`：源码、依赖、Go 版本和编译参数。
 
-当前固定 sing-box **1.14.4** 和 Go **1.27.4**，避免每日追踪上游时补丁失配。更新版本时修改 `build.env`、`.go-version`，并重新验证补丁。只固定目标平台，不裁剪常用代理协议；编译标签见 `build.env`。
+Actions 自动使用上游最新正式版，跳过预发布版；Go 版本见 `.go-version`。本地默认版本见 `build.env`。新版本补丁或测试不通过时不会发布，下次检查自动重试。只固定目标平台，不裁剪常用代理协议；编译标签见 `build.env`。
 
 ```sh
 xz -dk bsd-box-freebsd-amd64.xz

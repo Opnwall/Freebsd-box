@@ -8,16 +8,35 @@ on:
     branches: [master]
     paths-ignore: ['**/*.md']
   workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
 
 permissions:
   contents: read
 
 concurrency:
   group: freebsd-amd64-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  upstream:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      build: ${{ steps.check.outputs.build }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check latest upstream stable release
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/check-upstream.sh
+
   build:
+    needs: upstream
+    if: needs.upstream.outputs.build == 'true'
+    env:
+      SING_BOX_VERSION: ${{ needs.upstream.outputs.version }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -69,7 +88,9 @@ jobs:
           run: sh scripts/smoke-freebsd.sh
 
   release:
-    needs: [build, smoke]
+    needs: [upstream, build, smoke]
+    env:
+      SING_BOX_VERSION: ${{ needs.upstream.outputs.version }}
     if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -88,8 +109,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          printf 'FreeBSD x86-64 · TUN（system / gvisor / mixed）\n\n上游：SagerNet/sing-box v%s\n' "$SING_BOX_VERSION" > release-notes.md
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" dist/* --clobber
+            gh release edit "$RELEASE_TAG" --title "sing-box ${SING_BOX_VERSION} · FreeBSD x86-64 TUN" --notes-file release-notes.md
           else
-            gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "sing-box ${RELEASE_TAG} (FreeBSD x86-64 TUN)" --notes-file dist/build-info.txt
+            gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "sing-box ${SING_BOX_VERSION} · FreeBSD x86-64 TUN" --notes-file release-notes.md
           fi
