@@ -1,7 +1,7 @@
 {
   "version": "v0.9.7-0.20261023115432-040db71fcd33",
   "patch": "sing-tun-freebsd.patch",
-  "patch_sha256": "528acf3b787c0a86c7f05a1b7d4b3854fab211f498730fe02c40685ca28bc71e",
+  "patch_sha256": "9991b3999f62e7d6530c9cef6289bc9089eba8afd77d772e12cd1657fc7b2782",
   "files": {
     "monitor_freebsd.go": null,
     "monitor_other.go": "072dc462e924991d0adfc32b476982353791af17f89fdf451d2ae58299ca076b",
