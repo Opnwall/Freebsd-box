@@ -23,7 +23,7 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 network_setup
-for stack in system gvisor mixed; do
+for stack in gvisor system mixed; do
   cat > dist/smoke.json <<EOF
 {
   "log": {"level": "debug"},
