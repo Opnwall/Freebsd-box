@@ -1,7 +1,7 @@
 {
   "version": "v0.9.7-0.20261023115432-040db71fcd33",
   "patch": "sing-tun-freebsd.patch",
-  "patch_sha256": "a754d53536bc3bf681fe961af86d92cdbe5fe3cae7121761a341da366c7d1688",
+  "patch_sha256": "24e8017e3b244c5f6d148a7cf6e7d73bd0820a111d672265baa2be6d89546a11",
   "files": {
     "monitor_freebsd.go": null,
     "monitor_other.go": "072dc462e924991d0adfc32b476982353791af17f89fdf451d2ae58299ca076b",
@@ -14,6 +14,7 @@
     "tun_rules.go": "4a6bb9baab420a57293669a2a51d779fcd3b0a7fb02e14388bebfbe1b9ba25d9",
     "stack_system.go": "4d79c6bdcafda7d905749eb4e62fb272de4a2d7684a2f098bd26018439adaff1",
     "udp_reassembly.go": null,
-    "udp_reassembly_test.go": null
+    "udp_reassembly_test.go": null,
+    "stack_mixed.go": "cb0652bcfcc3e2d1435e2832f4019ffd5b6922313fe61af6c65fb9c85e5e0935"
   }
 }
